@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>When AI Goes Wrong — How a Machine Fails Is the Security Property</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; background: #141210; color: #ece7dd; line-height: 1.6; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 22px 64px; }
+  header { padding: 28px 0 8px; display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #3a352e; }
+  header .mark { font-weight: 700; letter-spacing: 0.5px; }
+  header .mark span { color: #e8a33d; }
+  header .tag { color: #a89f8f; font-size: 13px; }
+  .hero { padding: 56px 0 40px; }
+  .eyebrow { color: #e8a33d; font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 14px; }
+  h1 { font-size: 52px; line-height: 1.05; letter-spacing: -1px; max-width: 720px; }
+  h1 em { color: #e8a33d; font-style: normal; }
+  .hero p { font-size: 19px; color: #c9c2b4; max-width: 680px; margin-top: 18px; }
+  h2 { font-size: 26px; letter-spacing: -0.5px; margin: 56px 0 8px; }
+  .lede { color: #a89f8f; max-width: 680px; margin-bottom: 22px; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) { .pair { grid-template-columns: 1fr; } h1 { font-size: 38px; } }
+  .card { border: 1px solid #3a352e; border-radius: 12px; padding: 20px; background: #1d1a17; }
+  .card.closed { border-top: 3px solid #4caf7d; }
+  .card.open { border-top: 3px solid #c0392b; }
+  .card h3 { font-size: 18px; margin-bottom: 6px; }
+  .card p { color: #c9c2b4; font-size: 15px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+  .mode h3 { font-size: 16px; color: #e8a33d; margin-bottom: 4px; }
+  .mode p { color: #c9c2b4; font-size: 14.5px; }
+  .tests { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 700px) { .tests { grid-template-columns: 1fr; } }
+  .test { text-align: left; }
+  .test .num { color: #e8a33d; font-weight: 700; font-size: 22px; }
+  .test h3 { font-size: 16px; margin: 4px 0; }
+  .test p { color: #c9c2b4; font-size: 14.5px; }
+  .answer { border: 1px solid #3a352e; border-left: 4px solid #e8a33d; border-radius: 12px; padding: 22px; background: #1d1a17; }
+  .answer ol { margin-left: 20px; color: #c9c2b4; }
+  .answer li { margin: 8px 0; }
+  .answer li b { color: #ece7dd; }
+  .closing { margin-top: 56px; border-top: 1px solid #3a352e; padding-top: 28px; }
+  .closing p { font-size: 19px; max-width: 680px; }
+  .closing p b { color: #e8a33d; }
+  form { margin-top: 24px; display: flex; gap: 10px; flex-wrap: wrap; }
+  input[type="email"] { flex: 1; min-width: 240px; padding: 11px 14px; border-radius: 8px; border: 1px solid #3a352e; background: #141210; color: #ece7dd; font-size: 15px; }
+  button { padding: 11px 20px; border-radius: 8px; border: none; background: #e8a33d; color: #141210; font-weight: 700; font-size: 15px; cursor: pointer; }
+  .note { color: #a89f8f; font-size: 13px; margin-top: 10px; }
+  footer { margin-top: 48px; padding-top: 20px; border-top: 1px solid #3a352e; color: #a89f8f; font-size: 13px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="mark">WHEN AI <span>GOES WRONG</span></div>
+    <div class="tag">A thesis on machine failure</div>
+  </header>
+
+  <section class="hero">
+    <p class="eyebrow">Failure is not the exception. It is the property.</p>
+    <h1>Every system fails. <em>What failure does</em> is the security question.</h1>
+    <p>An AI system that fails is not news. An AI system that fails by completing an unauthorized act, taking an irreversible step, or leaving no trace — that is a security failure, not a quality issue. How a machine fails is the property that matters.</p>
+  </section>
+
+  <h2>Fail-closed vs. fail-open</h2>
+  <p class="lede">Two systems can fail the same way and produce opposite outcomes. The difference is what the failure is allowed to do.</p>
+  <div class="pair">
+    <div class="card closed">
+      <h3>Fail-closed</h3>
+      <p>The failure stops at the boundary. The act does not execute, the credential does not issue, the effect does not land. The system degrades into a state where nothing consequential happens without authorization. Failure costs convenience, not control.</p>
+    </div>
+    <div class="card open">
+      <h3>Fail-open</h3>
+      <p>The failure completes the act. The permission is assumed, the step is taken, the money moves, the message sends — and the failure is discovered later, if at all. Failure costs control, and the damage is already done by the time anyone notices.</p>
+    </div>
+  </div>
+
+  <h2>A taxonomy of failure</h2>
+  <p class="lede">Failures are not one thing. They arrive through distinct mechanisms, and each one needs a different guard.</p>
+  <div class="grid">
+    <div class="card mode"><h3>Exceeded authority</h3><p>The act goes further than the authorization allowed. The permission existed; the scope did not.</p></div>
+    <div class="card mode"><h3>Wrong target, right permission</h3><p>The permission was real, the target was not the one intended. Authorization without identification.</p></div>
+    <div class="card mode"><h3>Irreversible first action</h3><p>The first step cannot be undone, and it was taken before any check could catch it.</p></div>
+    <div class="card mode"><h3>Silent drift</h3><p>Behavior moves a little at a time until it is somewhere nobody authorized — with no single moment to point at.</p></div>
+    <div class="card mode"><h3>Proxy drift</h3><p>The measure becomes the mission. The system optimizes the proxy and abandons the purpose.</p></div>
+    <div class="card mode"><h3>Composition drift</h3><p>Each step is authorized; the composed sequence is not. Safe parts, unsafe whole.</p></div>
+    <div class="card mode"><h3>Compaction drift</h3><p>History compressed into a directive. A workaround, summarized often enough, becomes an instruction.</p></div>
+    <div class="card mode"><h3>Delegation drift</h3><p>Authority passed along a chain arrives wider than it left. Each hop adds a little; nobody added a lot.</p></div>
+  </div>
+
+  <h2>Three tests of “wrong”</h2>
+  <p class="lede">Not every bad output is a security failure. Apply three tests. If any one holds, treat it as one.</p>
+  <div class="tests">
+    <div class="card test"><div class="num">01</div><h3>Unauthorized effect</h3><p>Did something happen that no one with standing authorized?</p></div>
+    <div class="card test"><div class="num">02</div><h3>Irreversible effect</h3><p>Can the effect be undone — or is the damage already permanent?</p></div>
+    <div class="card test"><div class="num">03</div><h3>Untraceable effect</h3><p>Can the decision be reconstructed — who, what, under which authorization?</p></div>
+  </div>
+
+  <h2>The envelope answer</h2>
+  <div class="answer">
+    <p>Failure cannot be eliminated. It can be placed. The envelope puts the bound where the act crosses, so a failure lands on the safe side of it:</p>
+    <ol>
+      <li><b>Charter</b> — the purpose and the bound, set before the run.</li>
+      <li><b>Constraints</b> — the act narrowed to what is actually permitted.</li>
+      <li><b>Fidelity</b> — the act checked against the authorization, not the intention.</li>
+      <li><b>Correction</b> — revocation, veto gates, and timelocks, so a wrong act can be stopped or undone.</li>
+    </ol>
+    <p style="margin-top:12px;">The question is never “will it fail.” The question is whether failure is caught at the crossing — or discovered after the damage.</p>
+  </div>
+
+  <section class="closing">
+    <p><b>When AI goes wrong, the failure mode is the story.</b> Not the incident count, not the apology — the mechanism, and whether it failed closed.</p>
+    <form onsubmit="return false;">
+      <input type="email" placeholder="Email for the failure-mode notes" aria-label="Email">
+      <button type="submit">Follow the thesis</button>
+    </form>
+    <p class="note">Form is a preview only — it does not send anywhere. This page is a concept page: it states a thesis, it does not describe a product.</p>
+  </section>
+
+  <footer>
+    <span>When AI Goes Wrong — a thesis page.</span>
+    <span>Part of Agentics Ventures</span>
+  </footer>
+</div>
+</body>
+</html>
